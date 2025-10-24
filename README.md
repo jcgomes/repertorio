@@ -4,7 +4,7 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 
 ## 📋 Índice
 
-- [Funcionalidades](#Funcionalidades)
+- [Funcionalidades](#funcionalidades)
 - [Instalação](#instalação)
 - [Como Usar](#como-usar)
   - [Gerenciar Músicas](#gerenciar-músicas)
@@ -16,7 +16,7 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 - [Atalhos e Dicas](#atalhos-e-dicas)
 - [Tecnologias](#tecnologias)
 
-##Funcionalidades 🚀
+## 🚀 Funcionalidades
 
 ### 🎼 Gestão de Músicas
 - ✅ Cadastro completo de músicas (nome, autor, estilo, tom, cifra)
