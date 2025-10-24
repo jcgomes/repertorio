@@ -7,6 +7,7 @@ from xhtml2pdf import pisa
 from io import BytesIO
 import base64
 import math
+import re
 
 # Estilos musicais pré-definidos
 ESTILOS_MUSICAIS = [
@@ -71,10 +72,10 @@ class MusicApp:
         """Cria a página principal com abas para músicas, shows e sobre"""
         self.tab_musicas = ft.Tab(text="Músicas", content=self.musicas_ui())
         self.tab_shows = ft.Tab(text="Shows", content=self.shows_ui())
-        self.tab_sobre = ft.Tab(text="Sobre", content=self.sobre_ui())  # Nova aba
+        self.tab_sobre = ft.Tab(text="Sobre", content=self.sobre_ui())
         
         tabs = ft.Tabs(
-            tabs=[self.tab_musicas, self.tab_shows, self.tab_sobre],  # Adicione a nova aba aqui
+            tabs=[self.tab_musicas, self.tab_shows, self.tab_sobre],
             expand=True
         )
         
@@ -100,6 +101,13 @@ class MusicApp:
         
         self.atualizar_tabela_musicas()
         
+        # Campo de pesquisa
+        self.campo_pesquisa_musicas = ft.TextField(
+            label="Pesquisar música...",
+            width=300,
+            on_change=self.filtrar_musicas
+        )
+        
         btn_nova_musica = ft.ElevatedButton(
             "Nova Música",
             icon=ft.icons.ADD,
@@ -108,9 +116,14 @@ class MusicApp:
         
         return ft.Container(
             content=ft.Column([
-                ft.Row([btn_nova_musica], alignment=ft.MainAxisAlignment.END),
+                ft.Row([
+                    self.campo_pesquisa_musicas,
+                    btn_nova_musica
+                ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                 ft.Container(
-                    content=self.musicas_table,
+                    content=ft.Column([
+                        self.musicas_table
+                    ], scroll=ft.ScrollMode.AUTO),
                     expand=True,
                     border=ft.border.all(1, ft.colors.GREY_300),
                     border_radius=5
@@ -148,7 +161,9 @@ class MusicApp:
             content=ft.Column([
                 ft.Row([btn_novo_show], alignment=ft.MainAxisAlignment.END),
                 ft.Container(
-                    content=self.shows_table,
+                    content=ft.Column([
+                        self.shows_table
+                    ], scroll=ft.ScrollMode.AUTO),
                     expand=True,
                     border=ft.border.all(1, ft.colors.GREY_300),
                     border_radius=5
@@ -170,7 +185,11 @@ class MusicApp:
                 ),
                 ft.ListTile(
                     title=ft.Text("Desenvolvido por:"),
-                    subtitle=ft.Text("Juliano Da Cunha Gomes", weight=ft.FontWeight.BOLD),
+                    subtitle=ft.Text("Juliano Da Cunha Gomes.", weight=ft.FontWeight.BOLD),
+                ),
+                ft.ListTile(
+                    title=ft.Text("Repositório:"),
+                    subtitle=ft.Text("https://github.com/jcgomes/repertorio"),
                 ),
                 ft.ListTile(
                     title=ft.Text("Funcionalidades:"),
@@ -188,8 +207,8 @@ class MusicApp:
         )
 
     def carregar_musicas(self):
-        """Carrega as músicas do banco de dados"""
-        self.cursor.execute("SELECT * FROM musicas ORDER BY musica")
+        """Carrega as músicas do banco de dados ordenadas por ID"""
+        self.cursor.execute("SELECT * FROM musicas ORDER BY id")
         return self.cursor.fetchall()
 
     def carregar_shows(self):
@@ -197,10 +216,26 @@ class MusicApp:
         self.cursor.execute("SELECT * FROM shows ORDER BY data_show DESC")
         return self.cursor.fetchall()
 
-    def atualizar_tabela_musicas(self):
+    def filtrar_musicas(self, e):
+        """Filtra as músicas na tabela conforme o texto pesquisado"""
+        termo = self.campo_pesquisa_musicas.value.lower()
+        if termo:
+            musicas_filtradas = [m for m in self.musicas_data if 
+                               termo in m[1].lower() or 
+                               (m[2] and termo in m[2].lower()) or
+                               (m[3] and termo in m[3].lower())]
+        else:
+            musicas_filtradas = self.musicas_data
+        
+        self.atualizar_tabela_musicas(musicas_filtradas)
+
+    def atualizar_tabela_musicas(self, musicas_data=None):
         """Atualiza a tabela de músicas com os dados do banco"""
+        if musicas_data is None:
+            musicas_data = self.musicas_data
+            
         rows = []
-        for musica in self.musicas_data:
+        for musica in musicas_data:
             rows.append(
                 ft.DataRow(
                     cells=[
@@ -270,6 +305,50 @@ class MusicApp:
         self.shows_table.rows = rows
         self.page.update()
 
+    def formatar_tom(self, tom):
+        """Formata o tom para ficar entre parênteses se necessário"""
+        if not tom:
+            return tom
+            
+        tom = tom.strip()
+        
+        # Verifica se já está entre parênteses
+        if tom.startswith('(') and tom.endswith(')'):
+            return tom
+            
+        # Remove parênteses existentes para evitar duplicação
+        tom = tom.replace('(', '').replace(')', '').strip()
+        
+        # Coloca entre parênteses
+        return f"({tom})"
+
+    def verificar_musica_existente(self, nome_musica, autor=None, id_excluir=None):
+        """Verifica se uma música já existe no banco de dados"""
+        if autor:
+            if id_excluir:
+                self.cursor.execute(
+                    "SELECT id FROM musicas WHERE LOWER(musica)=LOWER(?) AND LOWER(autor)=LOWER(?) AND id != ?",
+                    (nome_musica, autor, id_excluir)
+                )
+            else:
+                self.cursor.execute(
+                    "SELECT id FROM musicas WHERE LOWER(musica)=LOWER(?) AND LOWER(autor)=LOWER(?)",
+                    (nome_musica, autor)
+                )
+        else:
+            if id_excluir:
+                self.cursor.execute(
+                    "SELECT id FROM musicas WHERE LOWER(musica)=LOWER(?) AND id != ?",
+                    (nome_musica, id_excluir)
+                )
+            else:
+                self.cursor.execute(
+                    "SELECT id FROM musicas WHERE LOWER(musica)=LOWER(?)",
+                    (nome_musica,)
+                )
+        
+        return self.cursor.fetchone() is not None
+
     def abrir_dialog_musica(self, id_musica=None):
         """Abre o diálogo para adicionar/editar uma música"""
         musica = None
@@ -285,7 +364,15 @@ class MusicApp:
             options=[ft.dropdown.Option(estilo) for estilo in ESTILOS_MUSICAIS],
             value=musica[3] if musica else None
         )
-        campo_tom = ft.TextField(label="Tom", value=musica[4] if musica else "")
+        
+        # Campo tom com formatação automática
+        tom_value = musica[4] if musica else ""
+        campo_tom = ft.TextField(
+            label="Tom", 
+            value=tom_value,
+            on_change=lambda e: self.formatar_tom_em_tempo_real(campo_tom)
+        )
+        
         campo_cifra = ft.TextField(
             label="Cifra", 
             value=musica[5] if musica else "",
@@ -294,24 +381,54 @@ class MusicApp:
             max_lines=5
         )
         
+        # Label para mensagens de erro
+        mensagem_erro = ft.Text("", color=ft.colors.RED, size=12)
+        
         def salvar_musica(e):
+            # Verificar se a música já existe
+            nome_musica = campo_musica.value.strip()
+            autor_musica = campo_autor.value.strip() if campo_autor.value else None
+            
+            if not nome_musica:
+                mensagem_erro.value = "O nome da música é obrigatório!"
+                self.page.update()
+                return
+                
+            if self.verificar_musica_existente(nome_musica, autor_musica, id_musica):
+                mensagem_erro.value = "Esta música já existe no repertório!"
+                self.page.update()
+                return
+                
+            # Formatar o tom
+            tom_formatado = self.formatar_tom(campo_tom.value) if campo_tom.value else ""
+            
             if id_musica:
                 self.cursor.execute(
                     "UPDATE musicas SET musica=?, autor=?, estilo=?, tom=?, cifra=? WHERE id=?",
-                    (campo_musica.value, campo_autor.value, campo_estilo.value, 
-                     campo_tom.value, campo_cifra.value, id_musica)
+                    (nome_musica, autor_musica, campo_estilo.value, 
+                     tom_formatado, campo_cifra.value, id_musica)
                 )
             else:
                 self.cursor.execute(
                     "INSERT INTO musicas (musica, autor, estilo, tom, cifra) VALUES (?, ?, ?, ?, ?)",
-                    (campo_musica.value, campo_autor.value, campo_estilo.value, 
-                     campo_tom.value, campo_cifra.value)
+                    (nome_musica, autor_musica, campo_estilo.value, 
+                     tom_formatado, campo_cifra.value)
                 )
             self.conn.commit()
             self.musicas_data = self.carregar_musicas()
             self.atualizar_tabela_musicas()
+            
+            # Limpar campo de pesquisa após adicionar nova música
+            self.campo_pesquisa_musicas.value = ""
+            
             self.page.dialog.open = False
             self.page.update()
+        
+        def formatar_tom_em_tempo_real(e):
+            """Formata o tom em tempo real enquanto o usuário digita"""
+            if campo_tom.value:
+                campo_tom.value = self.formatar_tom(campo_tom.value)
+                self.page.update()
         
         def cancelar(e):
             self.page.dialog.open = False
@@ -324,7 +441,8 @@ class MusicApp:
                 campo_autor,
                 campo_estilo,
                 campo_tom,
-                campo_cifra
+                campo_cifra,
+                mensagem_erro
             ], tight=True, scroll=ft.ScrollMode.AUTO),
             actions=[
                 ft.TextButton("Cancelar", on_click=cancelar),
@@ -336,6 +454,12 @@ class MusicApp:
         self.page.dialog = dialog
         dialog.open = True
         self.page.update()
+
+    def formatar_tom_em_tempo_real(self, campo_tom):
+        """Formata o tom em tempo real enquanto o usuário digita"""
+        if campo_tom.value:
+            campo_tom.value = self.formatar_tom(campo_tom.value)
+            self.page.update()
 
     def abrir_dialog_show(self, id_show=None):
         """Abre o diálogo para adicionar/editar um show"""
@@ -408,7 +532,7 @@ class MusicApp:
         repertorio = self.cursor.fetchall()
         
         # Buscar todas as músicas disponíveis
-        self.cursor.execute("SELECT id, musica, tom FROM musicas ORDER BY musica")
+        self.cursor.execute("SELECT id, musica, tom FROM musicas ORDER BY id")
         todas_musicas = self.cursor.fetchall()
         
         # Criar interface do repertório
@@ -612,158 +736,22 @@ class MusicApp:
         
         self.page.clean()
         self.page.add(content)
-        def adicionar_musica(e):
-            if not dropdown_musicas.value:
-                return
-                
-            id_musica = int(dropdown_musicas.value)
+
+    def processar_cifra_para_pdf(self, cifra):
+        """Processa a cifra para destacar texto entre colchetes em azul sem fundo amarelo"""
+        if not cifra:
+            return cifra
             
-            # Verificar se a música já está no repertório
-            self.cursor.execute(
-                "SELECT rs.sequencia, m.musica FROM repertorios_shows rs JOIN musicas m ON rs.id_musica = m.id WHERE rs.id_show = ? AND rs.id_musica = ?",
-                (id_show, id_musica)
-            )
-            musica_existente = self.cursor.fetchone()
-            
-            if musica_existente:
-                # Música já está no repertório
-                self.page.snack_bar = ft.SnackBar(
-                    ft.Text(f"Esta música já está no repertório na posição {musica_existente[0]}: {musica_existente[1]}")
-                )
-                self.page.snack_bar.open = True
-                self.page.update()
-                return
-                
-            # Encontrar a próxima sequência
-            self.cursor.execute("SELECT MAX(sequencia) FROM repertorios_shows WHERE id_show=?", (id_show,))
-            max_seq = self.cursor.fetchone()[0] or 0
-            nova_seq = max_seq + 1
-            
-            try:
-                # Adicionar ao banco
-                self.cursor.execute(
-                    "INSERT INTO repertorios_shows (id_show, id_musica, sequencia) VALUES (?, ?, ?)",
-                    (id_show, id_musica, nova_seq)
-                )
-                self.conn.commit()
-                carregar_repertorio()
-                
-                # Limpar dropdown
-                dropdown_musicas.value = None
-                self.page.update()
-                
-            except sqlite3.IntegrityError:
-                # Caso a música já exista (dupla verificação)
-                self.page.snack_bar = ft.SnackBar(
-                    ft.Text("Esta música já está no repertório")
-                )
-                self.page.snack_bar.open = True
-                self.page.update()
+        # Regex para encontrar texto entre colchetes
+        padrao = r'(\[[^\]]+\])'
         
-        def carregar_repertorio():
-            self.cursor.execute('''
-                SELECT m.id, m.musica, m.tom, m.cifra, rs.sequencia, rs.id
-                FROM repertorios_shows rs 
-                JOIN musicas m ON rs.id_musica = m.id 
-                WHERE rs.id_show = ? 
-                ORDER BY rs.sequencia
-            ''', (id_show,))
-            repertorio = self.cursor.fetchall()
-            
-            lista_musicas.controls.clear()
-            for i, musica in enumerate(repertorio):
-                lista_musicas.controls.append(
-                    ft.ListTile(
-                        title=ft.Text(f"{i+1}. {musica[1]}"),
-                        subtitle=ft.Text(f"Tom: {musica[2]}"),
-                        trailing=ft.Row([
-                            ft.IconButton(
-                                icon=ft.icons.ARROW_UPWARD,
-                                on_click=lambda e, id=musica[5]: mover_musica(id, -1)
-                            ),
-                            ft.IconButton(
-                                icon=ft.icons.ARROW_DOWNWARD,
-                                on_click=lambda e, id=musica[5]: mover_musica(id, 1)
-                            ),
-                            ft.IconButton(
-                                icon=ft.icons.DELETE,
-                                on_click=lambda e, id=musica[5]: remover_musica(id)
-                            )
-                        ], width=150)
-                    )
-                )
-            self.page.update()
+        # Substituir cada ocorrência com formatação HTML
+        def substituir_colchetes(match):
+            texto_entre_colchetes = match.group(1)
+            return f'<span class="colchetes">{texto_entre_colchetes}</span>'
         
-        def mover_musica(id_item, direcao):
-            # Buscar item atual
-            self.cursor.execute("SELECT sequencia, id_show FROM repertorios_shows WHERE id=?", (id_item,))
-            item = self.cursor.fetchone()
-            seq_atual = item[0]
-            
-            # Buscar item a ser trocado
-            nova_seq = seq_atual + direcao
-            if nova_seq < 1:
-                return
-                
-            self.cursor.execute(
-                "SELECT id FROM repertorios_shows WHERE id_show=? AND sequencia=?",
-                (id_show, nova_seq)
-            )
-            item_troca = self.cursor.fetchone()
-            
-            if item_troca:
-                # Trocar as sequências
-                self.cursor.execute(
-                    "UPDATE repertorios_shows SET sequencia=? WHERE id=?",
-                    (nova_seq, id_item)
-                )
-                self.cursor.execute(
-                    "UPDATE repertorios_shows SET sequencia=? WHERE id=?",
-                    (seq_atual, item_troca[0])
-                )
-            else:
-                # Apenas atualizar a sequência
-                self.cursor.execute(
-                    "UPDATE repertorios_shows SET sequencia=? WHERE id=?",
-                    (nova_seq, id_item)
-                )
-            
-            self.conn.commit()
-            carregar_repertorio()
-        
-        def remover_musica(id_item):
-            self.cursor.execute("DELETE FROM repertorios_shows WHERE id=?", (id_item,))
-            self.conn.commit()
-            carregar_repertorio()
-        
-        def voltar(e):
-            self.main_page()
-        
-        # Carregar repertório inicial
-        carregar_repertorio()
-        
-        # Layout da página de repertório
-        content = ft.Column([
-            ft.Row([ft.IconButton(icon=ft.icons.ARROW_BACK, on_click=voltar), titulo]),
-            ft.Row([
-                dropdown_musicas,
-                ft.ElevatedButton("Adicionar Música", on_click=adicionar_musica)
-            ]),
-            ft.Container(
-                content=lista_musicas,
-                border=ft.border.all(1),
-                border_radius=5,
-                padding=10,
-                expand=True
-            ),
-            ft.Row([
-                ft.ElevatedButton("Exportar PDF", on_click=lambda e: self.exportar_pdf(id_show)),
-                ft.ElevatedButton("Voltar", on_click=voltar)
-            ])
-        ], expand=True)
-        
-        self.page.clean()
-        self.page.add(content)
+        cifra_processada = re.sub(padrao, substituir_colchetes, cifra)
+        return cifra_processada
 
     def exportar_pdf(self, id_show):
         """Exporta o repertório para PDF usando xhtml2pdf"""
@@ -792,10 +780,9 @@ class MusicApp:
         max_caracteres = max(len(texto) for texto in textos)
         
         # Ajustar tamanho da fonte - aumentar para ocupar mais espaço
-        # A4 landscape tem cerca de 29cm de largura útil, aproximadamente 80-100 caracteres com fonte 32px
-        tamanho_fonte = min(40, 32 + (max_caracteres // 3))  # Aumenta a fonte conforme necessário
+        tamanho_fonte = min(40, 32 + (max_caracteres // 3))
         
-        # Criar conteúdo HTML para o PDF com fundo sólido
+        # Criar conteúdo HTML para o PDF
         html_content = f"""
         <!DOCTYPE html>
         <html>
@@ -810,7 +797,7 @@ class MusicApp:
                     font-family: Arial, sans-serif;
                     font-size: {tamanho_fonte}px;
                     font-weight: bold;
-                    background-color: #efefef;
+                    background-color: #F0F0F0;
                     margin: 0;
                     padding: 1cm;
                     line-height: 1.2;
@@ -818,7 +805,7 @@ class MusicApp:
                     height: 100%;
                 }}
                 .page-container {{
-                    background-color: #efefef;
+                    background-color: #F0F0F0;
                     width: 100%;
                     height: 100%;
                     padding: 0.5cm;
@@ -836,7 +823,7 @@ class MusicApp:
                     font-weight: bold;
                 }}
                 .tom {{
-                    color: #8B4513; /* marrom mais escuro */
+                    color: #8B4513;
                     font-weight: bold;
                 }}
                 .cifra {{
@@ -845,6 +832,11 @@ class MusicApp:
                     font-weight: bold;
                     padding: 0.05cm 0.1cm;
                 }}
+                .colchetes {{
+                    color: blue;
+                    background-color: #F0F0F0;
+                    font-weight: normal;
+                }}
             </style>
         </head>
         <body>
@@ -852,12 +844,15 @@ class MusicApp:
         """
         
         for musica in repertorio:
+            # Processar a cifra para destacar texto entre colchetes
+            cifra_processada = self.processar_cifra_para_pdf(musica[3] or "")
+            
             html_content += f"""
                 <div class="musica">
                     <span class="seta">➔</span>
                     <span class="nome">{musica[1]}</span>
                     <span class="tom">{musica[2]}</span>
-                    <span class="cifra">{musica[3] or ''}</span>
+                    <span class="cifra">{cifra_processada}</span>
                 </div>
             """
         
