@@ -4,17 +4,17 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 
 ## 📋 Índice
 
-- [Funcionalidades](#funcionalidades)
-- [Instalação](#instalação)
-- [Como Usar](#como-usar)
-  - [Gerenciar Músicas](#gerenciar-músicas)
-  - [Gerenciar Shows](#gerenciar-shows)
-  - [Criar Repertórios](#criar-repertórios)
-  - [Exportar PDF](#exportar-pdf)
-- [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)
-- [Formatação de Cifras](#formatação-de-cifras)
-- [Atalhos e Dicas](#atalhos-e-dicas)
-- [Tecnologias](#tecnologias)
+- [Funcionalidades](##funcionalidades)
+- [Instalação](##instalação)
+- [Como Usar](##como-usar)
+  - [Gerenciar Músicas](##gerenciar-músicas)
+  - [Gerenciar Shows](##gerenciar-shows)
+  - [Criar Repertórios](##criar-repertórios)
+  - [Exportar PDF](##exportar-pdf)
+- [Estrutura do Banco de Dados](##estrutura-do-banco-de-dados)
+- [Formatação de Cifras](##formatação-de-cifras)
+- [Atalhos e Dicas](##atalhos-e-dicas)
+- [Tecnologias](##tecnologias)
 
 ## 🚀 Funcionalidades
 
