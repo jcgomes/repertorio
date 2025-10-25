@@ -1,6 +1,6 @@
 # 🎵 Gerenciador de Repertório Musical
 
-Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertórios musicais, shows e exportar PDFs profissionais.
+Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertórios musicais, shows e exportar o repertório em PDF para ser vizualizado em telas.
 
 ## 📋 Índice
 
