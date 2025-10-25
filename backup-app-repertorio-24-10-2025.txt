@@ -1,0 +1,494 @@
+{
+  "musicas": [
+    [
+      "Simples desejo",
+      "Luciana Mello",
+      "Pop",
+      "(Cm)",
+      "C7M - D#7M - F7M"
+    ],
+    [
+      "Vapor Barato",
+      "O Rappa",
+      "Pop",
+      "(Am)",
+      "[Salsa] Am7 - G - F - E"
+    ],
+    [
+      "Ovelha negra",
+      "Rita Lee",
+      "Pop",
+      "(D/Bm)",
+      "D - G - (A7) -- G - Bm  Bb - F - C - G - A7"
+    ],
+    [
+      "Envolvidão",
+      "Rael",
+      "Pop",
+      "(Cm)",
+      "G#7M - G9 - Cm7(9)"
+    ],
+    [
+      "Por enquanto",
+      "Cassia Eler",
+      "Pop",
+      "(G/Em)",
+      "G - D/F# - Em - Bm - C - Bm - Am7 - D - D dim -- Em - Bm - C - G - (G D/F#) -- Em - Bm - C - Bm - Am7 - C - D"
+    ],
+    [
+      "O que sobrou do céu",
+      "O Rappa",
+      "Pop",
+      "(Am7)",
+      "Am7 [Maria Rita]"
+    ],
+    [
+      "Subirudoistiuzin",
+      "Criolo e Emicida",
+      "Funk",
+      "(Bm)",
+      "Bm - D - C#7 - C#dim"
+    ],
+    [
+      "Dizeres",
+      "Lourena",
+      "Pop",
+      "(A# / A#m)",
+      "A#7M - D#7M - D#m7"
+    ],
+    [
+      "Agora só falta você",
+      "Rita Lee",
+      "Pop",
+      "(Bm)",
+      "Bm - G - E - A -- C - G - D"
+    ],
+    [
+      "Palpite",
+      "Vanessa Rangel",
+      "Pop",
+      "(Em)",
+      "E - F#7add11 - A2 -- C#m - A2 -- C7 - D2"
+    ],
+    [
+      "Pagu",
+      "Maria Rita",
+      "Jazz",
+      "(G/Em)",
+      "[Herege] A7 - D7/9 [pizzicato início] B7 - D7 [pizzicato fim] G - A7 - G/B - D7 [cromatismo E-D7] C7 - B7 -- 2x [Ra ta ta…] C7 - B7 - C7 - D7 - E"
+    ],
+    [
+      "O Rodo Cotidiano",
+      "O Rappa",
+      "Pop",
+      "(Bm)",
+      "Bm - A - G - A  --  Bm - F#m - Em - F#m"
+    ],
+    [
+      "Zero",
+      "Liniker",
+      "Funk",
+      "(Am)",
+      "F7M - C7M [Wha funk]"
+    ],
+    [
+      "Mania de você",
+      "Rita Lee",
+      "Pop",
+      "(Am)",
+      "Am7 - D7/9 -- Dm7 - G - C7M - C7 - B7 - E4 - E [Oye Como Va]"
+    ],
+    [
+      "Assim que se faz",
+      "Luciana Mello",
+      "Funk",
+      "(Bm)",
+      "G7M - F#7 - Bm7 - Am7 - D7(9)"
+    ],
+    [
+      "20 Ligações",
+      "Exu baco",
+      "Pop",
+      "(Dm)",
+      "Gm - A - Dm"
+    ],
+    [
+      "Olhos Coloridos",
+      "Sandra de Sá",
+      "Pop",
+      "(Em)",
+      "Em7 - Bm - Am7"
+    ],
+    [
+      "Pretin/cera",
+      "Flora matos / O Surto",
+      "Pop",
+      "(C#m)",
+      "C#m - B  --  F#m - B - C#m"
+    ],
+    [
+      "Proibida pra mim",
+      "Charlie Brown Jr.",
+      "Rock",
+      "",
+      "F - C - Bb [engata em malandragem]"
+    ],
+    [
+      "Malandragem",
+      "Cassia Eller",
+      "Pop",
+      "(Dm)",
+      "Dm - C - Gm -- Dm - C - F - G - Bb - C - Dm"
+    ],
+    [
+      "Eu não vou",
+      "Fat Family",
+      "Funk",
+      "",
+      "A7M - E7/4(9) - (Dm)  --  \nD7M - E7/4(9) - C#m7 - Em7 - D7M - E7/4(9) - C#m7 - F#m - Bm7 - E7/4(9)"
+    ],
+    [
+      "Banho de folha",
+      "Luedji Luna",
+      "Pop",
+      "(F#m)",
+      "[Solo intro]  F#m - Bm7 - C#m7"
+    ],
+    [
+      "Aiaiai",
+      "Vanessa da mata",
+      "Pop",
+      "(Gm7)",
+      "Gm7 - C7(9)"
+    ],
+    [
+      "Oração",
+      "A banda mais bonita da cidade",
+      "Pop",
+      "",
+      "D2 - A - Bm7 - G  --  D2 - C9add"
+    ],
+    [
+      "Pé de Meia",
+      "Sandra de Sá",
+      "Pop",
+      "(Cm)",
+      "Cm - Bdim - Ddim  --  Fm7 - A#7 - D#7M - Ddim - G7(13m)"
+    ],
+    [
+      "Maldivas",
+      "Ludimilla",
+      "Pagode",
+      "(Em)",
+      "C7M - D#dim - Em - Dm7 - G7"
+    ],
+    [
+      "Eva",
+      "Ivete Sangalo",
+      "Axé",
+      "",
+      "G - A - D - Em -- D - C# - Bm - A - G - F# - Em - A"
+    ],
+    [
+      "4 da manhã",
+      "UM44K",
+      "Pop",
+      "",
+      "[Reggae] Am7 - Em7  Dm7 - E7/b13"
+    ],
+    [
+      "Sinais de Fogo",
+      "Preta Gil",
+      "Pop",
+      "(G#m)",
+      "G#m - Gdim - F#m - B7/9M - E7M - A#dim - D#7/9 -- G#m7 - D#m7 - D#7/9"
+    ],
+    [
+      "Telegrama",
+      "Zeca Baleiro",
+      "Pop",
+      "(Bm)",
+      "Bm - A - (E  G  F#) -- Bm - A9"
+    ],
+    [
+      "Me abraça",
+      "Ivete Sangalo",
+      "Axé",
+      "",
+      "A - E7(4/9) -- D7M - C#m7 - Bm7 - C#m7 - D7M - E7(4/9) -- A - E/G# - F#m7 - C#m7 - Bm7 - E7(4/9) - A - E7(4/9)"
+    ],
+    [
+      "Descobridor",
+      "Tim Maia",
+      "Pop",
+      "(Gm)",
+      "Gm7 - C7(9) -- Dm7 - G7  Cm7 - F"
+    ],
+    [
+      "Não quero dinheiro",
+      "Tim Maia",
+      "Pop",
+      "",
+      "A - F#m - (E4  A  E4) -- D - E/D - C#m - F#m - Bm - E4 - A - A7"
+    ],
+    [
+      "Nosso Primeiro Beijo",
+      "Gloria Groove",
+      "Samba",
+      "",
+      "[Capo 3a casa] C - Bm - Am - G7M - B7 - Em - E4 - Em7 - A - C - B7 -- Em - D - Am - B7 - Em - D - A - B7"
+    ],
+    [
+      "Zóio de Lula",
+      "Charlie Brown Jr.",
+      "Rock",
+      "(C#m)",
+      "C#m"
+    ],
+    [
+      "Mulher de fases",
+      "Raimundos",
+      "Rock",
+      "",
+      "G"
+    ],
+    [
+      "Sozinha",
+      "Sandra de Sá",
+      null,
+      "(Am)",
+      "C - G/B - Am - F - G -- Am - Em - F7M - (D4) [Quando a gente gosta] C - G - F7M -- Dm - F  A# -- C - G/B - Am -- F - G - C"
+    ],
+    [
+      "Não deixe o Samba Morrer",
+      "Alcione",
+      "Samba",
+      "(Bm)",
+      "[Intro:] C# dim - F#7 - Bm [Parte A:] Bm - Em - G/D - C# dim - F#7 - Bm - Em7 - A7 - D7M - D7 - G7M - F#7 - Bm [Eu vou ficar:] Em7 - A7 - D7M  -  Bm  -  Em7  -  A7  -  D7M  -  D# dim [E antes de me despedir:] Em7 - (C# dim - F#7) - D7M(9) - Bm - G7 - F#7 - Bm \n[Não deixe o Samba Morrer:]\nEm7 - (C# dim - F#7) - Bm - C# dim - F#7 - Bm - B7"
+    ],
+    [
+      "Uma noite e 1/2",
+      "Cheiro de Amor / Daniela Mercuri",
+      "Axé",
+      "(Cm)",
+      "Cm - Bb - Ab - (G)"
+    ]
+  ],
+  "shows": [
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena"
+    ]
+  ],
+  "repertorios": [
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Simples desejo",
+      "Luciana Mello",
+      1
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Vapor Barato",
+      "O Rappa",
+      2
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Envolvidão",
+      "Rael",
+      3
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Mania de você",
+      "Rita Lee",
+      4
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Zero",
+      "Liniker",
+      5
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Agora só falta você",
+      "Rita Lee",
+      6
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "20 Ligações",
+      "Exu baco",
+      7
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Subirudoistiuzin",
+      "Criolo e Emicida",
+      8
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Dizeres",
+      "Lourena",
+      9
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Oração",
+      "A banda mais bonita da cidade",
+      10
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "O que sobrou do céu",
+      "O Rappa",
+      11
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Eu não vou",
+      "Fat Family",
+      12
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Assim que se faz",
+      "Luciana Mello",
+      13
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "O Rodo Cotidiano",
+      "O Rappa",
+      14
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Telegrama",
+      "Zeca Baleiro",
+      15
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Pretin/cera",
+      "Flora matos / O Surto",
+      16
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Proibida pra mim",
+      "Charlie Brown Jr.",
+      17
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Malandragem",
+      "Cassia Eller",
+      18
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Olhos Coloridos",
+      "Sandra de Sá",
+      19
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Banho de folha",
+      "Luedji Luna",
+      20
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Maldivas",
+      "Ludimilla",
+      21
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Palpite",
+      "Vanessa Rangel",
+      22
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Não deixe o Samba Morrer",
+      "Alcione",
+      23
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Aiaiai",
+      "Vanessa da mata",
+      24
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Uma noite e 1/2",
+      "Cheiro de Amor / Daniela Mercuri",
+      25
+    ],
+    [
+      "25/10/2025",
+      "Nova Veneza",
+      "Carol Morena",
+      "Eva",
+      "Ivete Sangalo",
+      26
+    ]
+  ]
+}
