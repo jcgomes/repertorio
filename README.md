@@ -14,6 +14,7 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 - [Estrutura do Banco de Dados](#estrutura-do-banco-de-dados)
 - [Formatação de Cifras](#formatação-de-cifras)
 - [Atalhos e Dicas](#atalhos-e-dicas)
+- [Backup e Restauração](#backup-e-restauração)
 - [Tecnologias](#tecnologias)
 
 ## 🚀 Funcionalidades
@@ -24,24 +25,34 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 - ✅ Ordenação automática por ID
 - ✅ Verificação de duplicatas
 - ✅ Formatação automática do tom entre parênteses
+- ✅ Tabela expansível que ocupa toda a tela
 
 ### 🎪 Gestão de Shows
 - ✅ Cadastro de shows com data, local e artista
 - ✅ Visualização em ordem cronológica
 - ✅ Criação de repertórios personalizados
+- ✅ Tabela expansível que ocupa toda a tela
 
 ### 📋 Criação de Repertórios
-- ✅ Adição de músicas ao repertório com arrastar e soltar
+- ✅ Adição de músicas ao repertório com um clique
 - ✅ Reordenação com setas (↑↓)
-- ✅ Pesquisa de músicas disponíveis
+- ✅ Pesquisa de músicas disponíveis com foco automático
 - ✅ Sequenciamento automático
+- ✅ Verificação de duplicatas no repertório
 
 ### 📄 Exportação para PDF
 - ✅ Layout profissional em A4 paisagem
 - ✅ Destaque automático de texto entre colchetes em azul
-- ✅ Preservação de espaços múltiplos entre acordes
+- ✅ Substituição automática de "--" por seta (→)
 - ✅ Tamanho de fonte adaptável ao conteúdo
 - ✅ Fundo amarelo para cifras
+- ✅ Nome do arquivo automático: dd-mm-aaaa - artista - local.pdf
+
+### 💾 Backup e Segurança
+- ✅ Exportação completa do banco de dados
+- ✅ Importação de backups
+- ✅ Estatísticas em tempo real (total de músicas e shows)
+- ✅ Sincronização inteligente de dados
 
 ## 💻 Instalação
 
@@ -106,7 +117,7 @@ python repertorio.py
 1. Na aba **"Shows"**, clique no ícone **👁️ (Ver Repertório)**
 
 #### Adicionar Músicas
-1. Use o campo **"Pesquisar música..."** para encontrar músicas
+1. Use o campo **"Pesquisar música..."** (já com foco automático) para encontrar músicas
 2. Clique na música desejada na lista de disponíveis
 3. A música será automaticamente adicionada ao final do repertório
 
@@ -119,7 +130,8 @@ python repertorio.py
 
 #### Gerar PDF do Repertório
 1. No repertório do show, clique em **"Exportar PDF"**
-2. O PDF será gerado automaticamente e aberto no visualizador padrão
+2. Escolha o local para salvar o arquivo
+3. O PDF será gerado automaticamente e aberto no visualizador padrão
 
 #### Características do PDF
 - **Formato**: A4 paisagem
@@ -127,10 +139,12 @@ python repertorio.py
 - **Cores**:
   - ➔ Seta vermelha
   - Nome da música em preto
-  - Tom da musica em marrom
+  - Tom da música em marrom
   - Cifra destacada em amarelo
-  - Texto entre colchetes em azul sem destaque em amarelo. Funcinoa como lembretes, por exemplo:
-    <img width="1350" height="199" alt="image" src="https://github.com/user-attachments/assets/895486b9-dea6-4fb6-b527-b0ccfb61b6e4" />
+  - Seta para direita servindo para indicar a passagem de uma parte para a outra (exemplo: fim da parte A `→` inicio da parte B)
+  - Texto entre colchetes em azul sem destaque em amarelo, servindo para inserir dicas ou qualquer observação.
+  <img width="1155" height="117" alt="image" src="https://github.com/user-attachments/assets/80e23542-a316-4c6d-8b00-f88b0eb1dd17" />
+
 
 ## 🗃️ Estrutura do Banco de Dados
 
@@ -168,36 +182,54 @@ Use colchetes `[ ]` para destacar texto na cifra:
 **Exemplo:**
 Am7 - D [inicio pizzicato] G - C [fim pizzicato]  Am7 - D --  G - C - D
 
+
 **Resultado no PDF:**
 - `Am7 - D` → Fundo amarelo, negrito
 - `[inicio pizzicato]` → **Azul**, fundo cinza, sem negrito
 - `G - C` → Fundo amarelo, negrito
 - `[fim pizzicato]` → **Azul**, fundo cinza, sem negrito
-- `Am7 - D --  G - C - D` → Fundo amarelo, negrito
-- `--` → indica o limite entre partes, exemplo: fim da parte A -- inicio da parte B
-<img width="1356" height="143" alt="image" src="https://github.com/user-attachments/assets/2a8a845b-d164-4aa4-b0e2-83ecf95730b2" />
+- `Am7 - D -- G - C - D` → Fundo amarelo, negrito
+- `--` → Substituído automaticamente por `→` (seta)
 
-### Preservação de Espaços
-- Múltiplos espaços não são preservados
-- Use um traço entre os acordes para melhor organização visual da cifra
+### Símbolos Especiais
+- `--` → automaticamente convertido para `→` (seta para direita)
+- Use para indicar transições entre partes da música
 
 **Exemplo recomendado:**
-G - A - G - D - (Em) -- D - A/C# (os dois traços indica, por exemplo, o limite entre parte A e parte B)  
+G - A - G - D - (Em) → D - A/C# (a seta para direita indica, por exemplo, o limite entre parte A e parte B)  
 
+
+## 💾 Backup e Restauração
+
+### Exportar Backup
+1. Acesse a aba **"Configurações"**
+2. Clique em **"Exportar Banco de Dados"**
+3. Escolha o local para salvar o arquivo de backup
+4. O backup será salvo como `backup-app-repertorio-dd-mm-aaaa.txt`
+
+### Importar Backup
+1. Acesse a aba **"Configurações"**
+2. Clique em **"Importar Banco de Dados"**
+3. Selecione o arquivo de backup anteriormente exportado (Um exemplo de base de dados a ser importada: https://github.com/jcgomes/repertorio/blob/main/backup-app-repertorio-24-10-2025.txt)
+4. Os dados serão sincronizados inteligentemente com o banco atual
+
+### Estatísticas em Tempo Real
+- **Total de Músicas**: Atualizado automaticamente ao adicionar/remover músicas
+- **Total de Shows**: Atualizado automaticamente ao adicionar/remover shows
 
 ## ⌨️ Atalhos e Dicas
 
 ### Dicas de Uso
 1. **Tom automático**: Ao digitar o tom, ele é automaticamente formatado entre parênteses
-2. **Limpeza de pesquisa**: O campo de pesquisa é limpo automaticamente ao adicionar nova música
+2. **Foco automático**: Ao acessar um repertório, o campo de pesquisa já está com foco
 3. **Verificação de duplicatas**: O sistema impede cadastro de músicas com mesmo nome e autor
-4. **Ordenação**: Músicas são sempre ordenadas por ID para consistência
+4. **Estatísticas atualizadas**: Os totais são atualizados automaticamente em todas as operações
 
 ### Boas Práticas
 1. **Padronização de nomes**: Mantenha consistência nos nomes das músicas
 2. **Tom padrão**: Sempre informe o tom para facilitar transposições
 3. **Cifras detalhadas**: Use colchetes para anotações específicas
-4. **Espaçamento**: Use o formato ACORDE ESPAÇO TRAÇO ESPAÇO ACORDE para melhor legibilidade da cifra, exemplo: Dm - Am - E
+4. **Backup regular**: Exporte backups periódicamente para segurança dos dados
 
 ## 🛠️ Tecnologias
 
