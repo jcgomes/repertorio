@@ -274,18 +274,15 @@ class MusicApp:
                     subtitle=ft.Text("Juliano Da Cunha Gomes.", weight=ft.FontWeight.BOLD),
                 ),
                 ft.ListTile(
-                    title=ft.Text("Repositório e manual disponível em:"),
-                    subtitle=ft.Row([
-                        ft.Text(
-                            "https://github.com/jcgomes/repertorio", 
-                            color=ft.colors.BLUE,
-                            selectable=True,
-                            text_align=ft.TextAlign.LEFT,
-                            expand=True
-                        )
-                    ]),
+                    title=ft.Text("Repositório e manual:"),
+                ),
+                # BOTÃO PARA ABRIR GITHUB - ADICIONE ESTAS LINHAS:
+                ft.ElevatedButton(
+                    "📂 Abrir no GitHub",
+                    icon=ft.icons.OPEN_IN_NEW,
                     on_click=lambda e: self.page.launch_url("https://github.com/jcgomes/repertorio")
                 ),
+                # FIM DO BOTÃO
                 ft.ListTile(
                     title=ft.Text("Funcionalidades:"),
                     subtitle=ft.Text("• Cadastro de músicas\n• Gerenciamento de shows\n• Criação de repertórios\n• Exportação para PDF"),
