@@ -57,8 +57,9 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 ## 💻 Instalação
 
 ### Pré-requisitos
-- Python 3.8 ou superior
+- Python 3.12.7
 - pip (gerenciador de pacotes do Python)
+- flet 0.24.1 
 
 ### Passo a Passo
 
@@ -70,7 +71,7 @@ cd repertorio
 
 2. **Instale as dependências:**
 ```bash
-pip install flet sqlite3 xhtml2pdf
+pip install flet==0.24.1 xhtml2pdf
 ```
 
 3. **Execute o aplicativo:**
