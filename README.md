@@ -57,9 +57,10 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 ## 💻 Instalação
 
 ### Pré-requisitos
-- Python 3.12.7
 - pip (gerenciador de pacotes do Python)
+- Python 3.12.7
 - flet 0.24.1 
+
 
 ### Passo a Passo
 
