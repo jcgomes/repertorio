@@ -1020,7 +1020,7 @@ class MusicApp:
                 textos.append(texto)
             
             max_caracteres = max(len(texto) for texto in textos)
-            tamanho_fonte = min(40, 32 + (max_caracteres // 3))
+            tamanho_fonte = min(34, 26 + (max_caracteres // 3))
             altura_linha = 1.2
             espacamento_musica = "0.3cm"
             num_colunas = 1
@@ -1112,14 +1112,15 @@ class MusicApp:
         
         else:
             # PDF CIFRADO - Mantém o formato original
-            html_content = f"""<!DOCTYPE html>
+            html_parts = []
+            html_parts.append(f"""<!DOCTYPE html>
                 <html>
                 <head>
                     <meta charset="UTF-8">
                     <style>
                         @page {{
                             size: A4 landscape;
-                            margin: 1cm;
+                            margin: 0.5cm;
                         }}
                         body {{
                             font-family: Arial, sans-serif;
@@ -1127,12 +1128,13 @@ class MusicApp:
                             font-weight: bold;
                             background-color: #F0F0F0;
                             margin: 0;
-                            padding: 1cm;
-                            line-height: 1.2;
+                            padding: 0.5cm;
+                            line-height: 1.0;
                         }}
                         .musica {{
-                            margin-bottom: 0.3cm;
-                            line-height: 1.2;
+                            margin-bottom: 0.1cm;
+                            line-height: 1.0;
+                            page-break-inside: avoid;
                         }}
                         .seta {{
                             color: red;
@@ -1150,7 +1152,7 @@ class MusicApp:
                             color: black;
                             background-color: yellow;
                             font-weight: bold;
-                            padding: 0.05cm 0.1cm;
+                            padding: 0.02cm 0.05cm;
                         }}
                         .colchetes {{
                             color: blue;
@@ -1159,21 +1161,21 @@ class MusicApp:
                         }}
                     </style>
                 </head>
-                <body>"""
+                <body>""")
             
             for musica in repertorio:
                 cifra_processada = self.processar_cifra_para_pdf(musica[3] or "")
-                html_content += f"""
+                html_parts.append(f"""
                     <div class="musica">
                         <span class="seta">➔</span>
                         <span class="nome">{musica[1]}</span>
                         <span class="tom">{musica[2]}</span>
                         <span class="cifra">{cifra_processada}</span>
-                    </div>"""
+                    </div>""")
             
-            html_content += """
+            html_parts.append("""
                 </body>
-                </html>"""
+                </html>""")
             
             html_content = "\n".join(html_parts)
         
