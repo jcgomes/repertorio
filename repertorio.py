@@ -73,18 +73,34 @@ class MusicApp:
 
     def main_page(self):
         """Cria a página principal com abas para músicas, shows e sobre"""
-        self.tab_musicas = ft.Tab(text="Músicas", content=self.musicas_ui())
-        self.tab_shows = ft.Tab(text="Shows", content=self.shows_ui())
-        self.tab_configuracoes = ft.Tab(text="Configurações", content=self.configuracoes_ui())
-        self.tab_sobre = ft.Tab(text="Sobre", content=self.sobre_ui())
+        # Criar as interfaces primeiro
+        self.tab_musicas_content = self.musicas_ui()
+        self.tab_shows_content = self.shows_ui()
+        self.tab_configuracoes_content = self.configuracoes_ui()
+        self.tab_sobre_content = self.sobre_ui()
+        
+        self.tab_musicas = ft.Tab(text="Músicas", content=self.tab_musicas_content)
+        self.tab_shows = ft.Tab(text="Shows", content=self.tab_shows_content)
+        self.tab_configuracoes = ft.Tab(text="Configurações", content=self.tab_configuracoes_content)
+        self.tab_sobre = ft.Tab(text="Sobre", content=self.tab_sobre_content)
         
         tabs = ft.Tabs(
             tabs=[self.tab_musicas, self.tab_shows, self.tab_configuracoes, self.tab_sobre],
-            expand=True
+            expand=True,
+            on_change=self.ao_mudar_aba
         )
         
         self.page.clean()
         self.page.add(tabs)
+
+    def ao_mudar_aba(self, e):
+        """Quando muda de aba, coloca foco no campo de pesquisa"""
+        if e.control.selected_index == 0:  # Aba Músicas
+            if hasattr(self, 'campo_pesquisa_musicas'):
+                self.campo_pesquisa_musicas.focus()
+        elif e.control.selected_index == 1:  # Aba Shows
+            if hasattr(self, 'campo_pesquisa_shows'):
+                self.campo_pesquisa_shows.focus()
 
     def musicas_ui(self):
         """Interface para gerenciamento de músicas"""
@@ -108,7 +124,8 @@ class MusicApp:
         self.campo_pesquisa_musicas = ft.TextField(
             label="Pesquisar música...",
             width=300,
-            on_change=self.filtrar_musicas
+            on_change=self.filtrar_musicas,
+            autofocus=True  # Foco automático ao entrar na aba
         )
         
         btn_nova_musica = ft.ElevatedButton(
@@ -158,6 +175,14 @@ class MusicApp:
         
         self.atualizar_tabela_shows()
         
+        # Campo de pesquisa para shows
+        self.campo_pesquisa_shows = ft.TextField(
+            label="Pesquisar shows (data, local ou artista)...",
+            width=300,
+            on_change=self.filtrar_shows,
+            autofocus=True  # Foco automático ao entrar na aba
+        )
+        
         btn_novo_show = ft.ElevatedButton(
             "Novo Show",
             icon=ft.icons.ADD,
@@ -178,7 +203,10 @@ class MusicApp:
         
         return ft.Container(
             content=ft.Column([
-                ft.Row([btn_novo_show], alignment=ft.MainAxisAlignment.END),
+                ft.Row([
+                    self.campo_pesquisa_shows,
+                    btn_novo_show
+                ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
                 table_container
             ], expand=True),
             padding=20,
@@ -276,13 +304,11 @@ class MusicApp:
                 ft.ListTile(
                     title=ft.Text("Repositório e manual:"),
                 ),
-                # BOTÃO PARA ABRIR GITHUB - ADICIONE ESTAS LINHAS:
                 ft.ElevatedButton(
                     "📂 Abrir no GitHub",
                     icon=ft.icons.OPEN_IN_NEW,
                     on_click=lambda e: self.page.launch_url("https://github.com/jcgomes/repertorio")
                 ),
-                # FIM DO BOTÃO
                 ft.ListTile(
                     title=ft.Text("Funcionalidades:"),
                     subtitle=ft.Text("• Cadastro de músicas\n• Gerenciamento de shows\n• Criação de repertórios\n• Exportação para PDF"),
@@ -321,6 +347,19 @@ class MusicApp:
         
         self.atualizar_tabela_musicas(musicas_filtradas)
 
+    def filtrar_shows(self, e):
+        """Filtra os shows na tabela conforme o texto pesquisado"""
+        termo = self.campo_pesquisa_shows.value.lower()
+        if termo:
+            shows_filtrados = [s for s in self.shows_data if 
+                             termo in s[1].lower() or  # data
+                             termo in s[2].lower() or  # local
+                             termo in s[3].lower()]    # artista
+        else:
+            shows_filtrados = self.shows_data
+        
+        self.atualizar_tabela_shows(shows_filtrados)
+
     def atualizar_tabela_musicas(self, musicas_data=None):
         """Atualiza a tabela de músicas com os dados do banco"""
         if musicas_data is None:
@@ -355,11 +394,18 @@ class MusicApp:
             )
         self.musicas_table.rows = rows
         self.page.update()
+        
+        # Restaurar foco no campo de pesquisa após atualizar
+        if hasattr(self, 'campo_pesquisa_musicas'):
+            self.campo_pesquisa_musicas.focus()
 
-    def atualizar_tabela_shows(self):
+    def atualizar_tabela_shows(self, shows_data=None):
         """Atualiza la tabela de shows com os dados do banco"""
+        if shows_data is None:
+            shows_data = self.shows_data
+            
         rows = []
-        for show in self.shows_data:
+        for show in shows_data:
             rows.append(
                 ft.DataRow(
                     cells=[
@@ -384,10 +430,20 @@ class MusicApp:
                                     tooltip="Ver Repertório",
                                     on_click=lambda e, id=show[0]: self.ver_repertorio(id)
                                 ),
-                                ft.IconButton(
+                                # Menu para exportação com duas opções
+                                ft.PopupMenuButton(
                                     icon=ft.icons.PICTURE_AS_PDF,
                                     tooltip="Exportar PDF",
-                                    on_click=lambda e, id=show[0]: self.exportar_pdf(id)
+                                    items=[
+                                        ft.PopupMenuItem(
+                                            text="Repertório Cifrado",
+                                            on_click=lambda e, id=show[0]: self.exportar_pdf(id, tipo="cifrado")
+                                        ),
+                                        ft.PopupMenuItem(
+                                            text="Repertório Simplificado", 
+                                            on_click=lambda e, id=show[0]: self.exportar_pdf(id, tipo="simplificado")
+                                        )
+                                    ]
                                 )
                             ])
                         )
@@ -396,6 +452,10 @@ class MusicApp:
             )
         self.shows_table.rows = rows
         self.page.update()
+        
+        # Restaurar foco no campo de pesquisa após atualizar
+        if hasattr(self, 'campo_pesquisa_shows'):
+            self.campo_pesquisa_shows.focus()
 
     def formatar_tom(self, tom):
         """Formata o tom para ficar entre parênteses se necessário"""
@@ -514,7 +574,8 @@ class MusicApp:
             self.atualizar_cards_estatistica()
             
             # Limpar campo de pesquisa após adicionar nova música
-            self.campo_pesquisa_musicas.value = ""
+            if hasattr(self, 'campo_pesquisa_musicas'):
+                self.campo_pesquisa_musicas.value = ""
             
             self.page.dialog.open = False
             self.page.update()
@@ -528,6 +589,9 @@ class MusicApp:
         def cancelar(e):
             self.page.dialog.open = False
             self.page.update()
+            # Restaurar foco no campo de pesquisa após fechar o diálogo
+            if hasattr(self, 'campo_pesquisa_musicas'):
+                self.campo_pesquisa_musicas.focus()
         
         dialog = ft.AlertDialog(
             title=ft.Text("Editar Música" if id_musica else "Nova Música"),
@@ -595,6 +659,9 @@ class MusicApp:
         def cancelar(e):
             self.page.dialog.open = False
             self.page.update()
+            # Restaurar foco no campo de pesquisa após fechar o diálogo
+            if hasattr(self, 'campo_pesquisa_shows'):
+                self.campo_pesquisa_shows.focus()
         
         dialog = ft.AlertDialog(
             title=ft.Text("Editar Show" if id_show else "Novo Show"),
@@ -715,7 +782,7 @@ class MusicApp:
                 self.conn.commit()
                 carregar_repertorio()
                 
-                # CORREÇÃO 1: Resetar musicas_filtradas para todas as músicas
+                # Resetar musicas_filtradas para todas as músicas
                 nonlocal musicas_filtradas
                 musicas_filtradas = todas_musicas
                 
@@ -815,6 +882,9 @@ class MusicApp:
         
         def voltar(e):
             self.main_page()
+            # Restaurar foco no campo de pesquisa ao voltar
+            if hasattr(self, 'campo_pesquisa_shows'):
+                self.campo_pesquisa_shows.focus()
         
         # Configurar o evento de change do campo de pesquisa
         campo_pesquisa.on_change = filtrar_musicas
@@ -845,7 +915,9 @@ class MusicApp:
                 expand=True
             ),
             ft.Row([
-                ft.ElevatedButton("Exportar PDF", on_click=lambda e: self.exportar_pdf(id_show)),
+                # Dois botões para exportação
+                ft.ElevatedButton("Exportar PDF Cifrado", on_click=lambda e: self.exportar_pdf(id_show, tipo="cifrado")),
+                ft.ElevatedButton("Exportar PDF Simplificado", on_click=lambda e: self.exportar_pdf(id_show, tipo="simplificado")),
                 ft.ElevatedButton("Voltar", on_click=voltar)
             ])
         ], expand=True)
@@ -871,7 +943,7 @@ class MusicApp:
         cifra_processada = re.sub(padrao_colchetes, substituir_colchetes, cifra_com_setas)
         return cifra_processada
 
-    def exportar_pdf(self, id_show):
+    def exportar_pdf(self, id_show, tipo="cifrado"):
         """Exporta o repertório para PDF usando xhtml2pdf"""
         # Buscar dados do show para o nome do arquivo
         self.cursor.execute("SELECT * FROM shows WHERE id=?", (id_show,))
@@ -886,10 +958,15 @@ class MusicApp:
         except:
             data_formatada = "data-desconhecida"
         
-        # CORREÇÃO 2: Formato correto dd-mm-aaaa - artista - local.pdf
+        # Formato correto dd-mm-aaaa - artista - local.pdf
         artista_limpo = re.sub(r'[^\w\s-]', '', show[3]).replace(' ', '-')
         local_limpo = re.sub(r'[^\w\s-]', '', show[2]).replace(' ', '-')
-        nome_arquivo = f"{data_formatada} - {artista_limpo} - {local_limpo}.pdf"
+        
+        # Nome do arquivo baseado no tipo
+        if tipo == "simplificado":
+            nome_arquivo = f"{data_formatada} - {artista_limpo} - {local_limpo} - SIMPLIFICADO.pdf"
+        else:
+            nome_arquivo = f"{data_formatada} - {artista_limpo} - {local_limpo}.pdf"
         
         # Buscar músicas do repertório
         self.cursor.execute('''
@@ -907,96 +984,198 @@ class MusicApp:
             self.page.update()
             return
         
-        # Calcular o comprimento máximo do texto
-        textos = []
-        for musica in repertorio:
-            texto = f"➔ {musica[1]} {musica[2]} {musica[3] or ''}"
-            textos.append(texto)
-        
-        max_caracteres = max(len(texto) for texto in textos)
-        
-        # Ajustar tamanho da fonte - aumentar para ocupar mais espaço
-        tamanho_fonte = min(40, 32 + (max_caracteres // 3))
+        # Configurações diferentes para cada tipo de PDF
+        if tipo == "simplificado":
+            # PDF SIMPLIFICADO - A4 Retrato, layout em colunas
+            orientacao = "portrait"
+            margem = "0.5cm"
+            
+            # Calcular número de colunas baseado no número de músicas
+            num_musicas = len(repertorio)
+            if num_musicas <= 20:
+                num_colunas = 2
+                tamanho_fonte = 16  # Tamanho grande igual ao anterior
+            elif num_musicas <= 40:
+                num_colunas = 3
+                tamanho_fonte = 14  # Tamanho médio
+            else:
+                num_colunas = 3
+                tamanho_fonte = 12  # Tamanho menor para muitas músicas
+            
+            altura_linha = 1.2
+            espacamento_musica = "0.3cm"
+            
+            # Calcular músicas por coluna
+            musicas_por_coluna = math.ceil(num_musicas / num_colunas)
+            
+        else:
+            # PDF CIFRADO - A4 Paisagem (mantém o formato original)
+            orientacao = "landscape"
+            margem = "1cm"
+            
+            # Calcular o comprimento máximo do texto para o PDF cifrado
+            textos = []
+            for musica in repertorio:
+                texto = f"➔ {musica[1]} {musica[2]} {musica[3] or ''}"
+                textos.append(texto)
+            
+            max_caracteres = max(len(texto) for texto in textos)
+            tamanho_fonte = min(40, 32 + (max_caracteres // 3))
+            altura_linha = 1.2
+            espacamento_musica = "0.3cm"
+            num_colunas = 1
         
         # Criar conteúdo HTML para o PDF
-        html_content = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <style>
-                @page {{
-                    size: A4 landscape;
-                    margin: 0;
-                }}
-                body {{
-                    font-family: Arial, sans-serif;
-                    font-size: {tamanho_fonte}px;
-                    font-weight: bold;
-                    background-color: #F0F0F0;
-                    margin: 0;
-                    padding: 1cm;
-                    line-height: 1.2;
-                    width: 100%;
-                    height: 100%;
-                }}
-                .page-container {{
-                    background-color: #F0F0F0;
-                    width: 100%;
-                    height: 100%;
-                    padding: 0.5cm;
-                }}
-                .musica {{
-                    margin-bottom: 0.3cm;
-                    line-height: 1.2;
-                }}
-                .seta {{
-                    color: red;
-                    font-weight: bold;
-                }}
-                .nome {{
-                    color: black;
-                    font-weight: bold;
-                }}
-                .tom {{
-                    color: #8B4513;
-                    font-weight: bold;
-                }}
-                .cifra {{
-                    color: black;
-                    background-color: yellow;
-                    font-weight: bold;
-                    padding: 0.05cm 0.1cm;
-                }}
-                .colchetes {{
-                    color: blue;
-                    background-color: #F0F0F0;
-                    font-weight: normal;
-                }}
-            </style>
-        </head>
-        <body>
-            <div class="page-container">
-        """
-        
-        for musica in repertorio:
-            # Processar a cifra para destacar texto entre colchetes e substituir --
-            cifra_processada = self.processar_cifra_para_pdf(musica[3] or "")
+        if tipo == "simplificado":
+            # PDF SIMPLIFICADO - Tabela com 2 colunas fixas
+            html_content = """<!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        @page {
+                            size: A4 landscape;
+                            margin: 0.5cm;
+                        }
+                        body {
+                            font-family: Arial, sans-serif;
+                            font-size: 30px;
+                            font-weight: bold;
+                            background-color: #F0F0F0;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        td {
+                            vertical-align: top;
+                            padding: 5px;
+                            width: 50%;
+                        }
+                        .musica {
+                            margin-bottom: 8px;
+                            line-height: 1.2;
+                        }
+                        .seta {
+                            color: red;
+                            font-weight: bold;
+                        }
+                        .nome {
+                            color: black;
+                        }
+                        .tom {
+                            color: #8B4513;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <tr>
+                            <td>"""
             
-            html_content += f"""
+            # Distribuir músicas em 2 colunas
+            num_musicas = len(repertorio)
+            metade = (num_musicas + 1) // 2  # Divide ao meio arredondando para cima
+            
+            # Primeira coluna
+            for i in range(metade):
+                musica = repertorio[i]
+                html_content += f"""
                 <div class="musica">
                     <span class="seta">➔</span>
                     <span class="nome">{musica[1]}</span>
                     <span class="tom">{musica[2]}</span>
-                    <span class="cifra">{cifra_processada}</span>
-                </div>
-            """
+                </div>"""
+            
+            html_content += """
+                </td>
+                <td>"""
+            
+            # Segunda coluna
+            for i in range(metade, num_musicas):
+                musica = repertorio[i]
+                html_content += f"""
+                <div class="musica">
+                    <span class="seta">➔</span>
+                    <span class="nome">{musica[1]}</span>
+                    <span class="tom">{musica[2]}</span>
+                </div>"""
+            
+            html_content += """
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+                </html>"""
         
-        html_content += """
-            </div>
-        </body>
-        </html>
-        """
+        else:
+            # PDF CIFRADO - Mantém o formato original
+            html_content = f"""<!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        @page {{
+                            size: A4 landscape;
+                            margin: 1cm;
+                        }}
+                        body {{
+                            font-family: Arial, sans-serif;
+                            font-size: {tamanho_fonte}px;
+                            font-weight: bold;
+                            background-color: #F0F0F0;
+                            margin: 0;
+                            padding: 1cm;
+                            line-height: 1.2;
+                        }}
+                        .musica {{
+                            margin-bottom: 0.3cm;
+                            line-height: 1.2;
+                        }}
+                        .seta {{
+                            color: red;
+                            font-weight: bold;
+                        }}
+                        .nome {{
+                            color: black;
+                            font-weight: bold;
+                        }}
+                        .tom {{
+                            color: #8B4513;
+                            font-weight: bold;
+                        }}
+                        .cifra {{
+                            color: black;
+                            background-color: yellow;
+                            font-weight: bold;
+                            padding: 0.05cm 0.1cm;
+                        }}
+                        .colchetes {{
+                            color: blue;
+                            background-color: #F0F0F0;
+                            font-weight: normal;
+                        }}
+                    </style>
+                </head>
+                <body>"""
+            
+            for musica in repertorio:
+                cifra_processada = self.processar_cifra_para_pdf(musica[3] or "")
+                html_content += f"""
+                    <div class="musica">
+                        <span class="seta">➔</span>
+                        <span class="nome">{musica[1]}</span>
+                        <span class="tom">{musica[2]}</span>
+                        <span class="cifra">{cifra_processada}</span>
+                    </div>"""
+            
+            html_content += """
+                </body>
+                </html>"""
+            
+            html_content = "\n".join(html_parts)
         
         # Gerar PDF
         pdf_buffer = BytesIO()
@@ -1008,7 +1187,7 @@ class MusicApp:
             self.page.update()
             return
         
-        # CORREÇÃO 3: Salvar PDF com nome correto usando FilePicker
+        # Salvar PDF com nome correto usando FilePicker
         def salvar_pdf(e: ft.FilePickerResultEvent):
             if e.path:
                 try:
@@ -1321,6 +1500,9 @@ class MusicApp:
         def cancelar(e):
             self.page.dialog.open = False
             self.page.update()
+            # Restaurar foco no campo de pesquisa após fechar o diálogo
+            if hasattr(self, 'campo_pesquisa_musicas'):
+                self.campo_pesquisa_musicas.focus()
         
         dialog = ft.AlertDialog(
             title=ft.Text("Confirmar Exclusão"),
@@ -1355,6 +1537,9 @@ class MusicApp:
         def cancelar(e):
             self.page.dialog.open = False
             self.page.update()
+            # Restaurar foco no campo de pesquisa após fechar o diálogo
+            if hasattr(self, 'campo_pesquisa_shows'):
+                self.campo_pesquisa_shows.focus()
         
         dialog = ft.AlertDialog(
             title=ft.Text("Confirmar Exclusão"),
