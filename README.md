@@ -5,6 +5,7 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 ## 📋 Índice
 
 - [Funcionalidades](#funcionalidades)
+- [Estrutura do Projeto](#estrutura-do-projeto)
 - [Instalação](#instalação)
 - [Como Usar](#como-usar)
   - [Gerenciar Músicas](#gerenciar-músicas)
@@ -33,6 +34,15 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 - ✅ Criação de repertórios personalizados
 - ✅ Tabela expansível que ocupa toda a tela
 
+### ✅ Gestão de Checklists (NOVO!)
+- ✅ Criação de checklists com título e data
+- ✅ Adição de itens com descrição e status (concluído/pendente)
+- ✅ Marcação de itens como concluídos com checkboxes
+- ✅ Visualização de progresso (barra e porcentagem)
+- ✅ Ordenação por data decrescente
+- ✅ Visualização dedicada com cards para cada item
+- ✅ Edição e exclusão de checklists e itens
+
 ### 📋 Criação de Repertórios
 - ✅ Adição de músicas ao repertório com um clique
 - ✅ Reordenação com setas (↑↓)
@@ -53,6 +63,21 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 - ✅ Importação de backups
 - ✅ Estatísticas em tempo real (total de músicas e shows)
 - ✅ Sincronização inteligente de dados
+
+## 📁 Estrutura do Projeto
+```text
+Repertorio-App/
+├── main.py                 # Arquivo principal que inicia o app
+├── database.py             # Configuração do banco de dados
+├── tabs/
+│   ├── musicas.py          # Aba de Músicas
+│   ├── shows.py            # Aba de Shows
+│   ├── checklists.py       # Aba de Checklists (NOVO!)
+│   ├── configuracoes.py    # Aba de Configurações
+│   └── sobre.py            # Aba Sobre
+└── utils/
+    └── helpers.py          # Funções auxiliares
+```
 
 ## 💻 Instalação
 
@@ -77,7 +102,7 @@ pip install flet==0.24.1 xhtml2pdf
 
 3. **Execute o aplicativo:**
 ```bash
-python repertorio.py
+python main.py
 ```
 
 ## 🎮 Como Usar
@@ -176,6 +201,21 @@ python repertorio.py
 | id_musica | INTEGER NOT NULL | Referência à música |
 | sequencia | INTEGER NOT NULL | Ordem no repertório |
 
+### Tabela `checklist`
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| id | INTEGER PRIMARY KEY | Identificador único |
+| data | TEXT NOT NULL | Data do checklist (DD/MM/AAAA) |
+| titulo | TEXT NOT NULL | Título do checklist |
+
+### Tabela `checklist_detail`
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| id | INTEGER PRIMARY KEY | Identificador único |
+| id_checklist | INTEGER NOT NULL | Referência ao checklist |
+| descricao | TEXT NOT NULL | Descrição do item |
+| status | INTEGER DEFAULT 0 | Status do item (0=pendente, 1=concluído) |
+
 ## 🎵 Formatação de Cifras
 
 ### Destaque com Colchetes
@@ -200,6 +240,23 @@ Am7 - D [inicio pizzicato] G - C [fim pizzicato]  Am7 - D --  G - C - D
 **Exemplo recomendado:**
 G - A - G - D - (Em) → D - A/C# (a seta para direita indica, por exemplo, o limite entre parte A e parte B)  
 
+### ✅ Gerenciar Checklists
+
+#### Adicionar Novo Checklist
+1. Acesse a aba **"Checklists"**
+2. Clique em **"Novo Checklist"**
+3. Preencha os campos:
+   - **Data**: Formato DD/MM/AAAA
+   - **Título**: Nome do checklist
+4. Adicione itens clicando em **"Adicionar Item"**
+5. Para cada item, preencha a descrição
+6. Clique em **"Salvar"**
+
+#### Visualizar e Gerenciar Itens
+1. Na aba **"Checklists"**, clique no ícone **📋 (Ver Itens)** ao lado do checklist desejado
+2. Na visualização, marque os checkboxes para concluir itens
+3. O progresso é atualizado automaticamente
+4. Use os ícones de **✏️ (Editar)** ou **🗑️ (Excluir)** para gerenciar o checklist completo
 
 ## 💾 Backup e Restauração
 
