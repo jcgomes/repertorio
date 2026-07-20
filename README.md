@@ -72,7 +72,7 @@ Repertorio-App/
 ├── tabs/
 │   ├── musicas.py          # Aba de Músicas
 │   ├── shows.py            # Aba de Shows
-│   ├── checklists.py       # Aba de Checklists (NOVO!)
+│   ├── checklists.py       # Aba de Checklists
 │   ├── configuracoes.py    # Aba de Configurações
 │   └── sobre.py            # Aba Sobre
 └── utils/
@@ -310,7 +310,7 @@ Em caso de problemas ou dúvidas:
 **Juliano Da Cunha Gomes**  
 - GitHub: [@jcgomes](https://github.com/jcgomes)
 - Repositório: [https://github.com/jcgomes/repertorio](https://github.com/jcgomes/repertorio)
-
+- Desenvolvido com o auxílio do DeepSeek
 ---
 
 **© 2024 - Todos os direitos reservados**
