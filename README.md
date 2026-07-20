@@ -34,7 +34,7 @@ Um aplicativo desktop desenvolvido em Python com Flet para gerenciar repertório
 - ✅ Criação de repertórios personalizados
 - ✅ Tabela expansível que ocupa toda a tela
 
-### ✅ Gestão de Checklists (NOVO!)
+### ✅ Gestão de Checklists
 - ✅ Criação de checklists com título e data
 - ✅ Adição de itens com descrição e status (concluído/pendente)
 - ✅ Marcação de itens como concluídos com checkboxes
